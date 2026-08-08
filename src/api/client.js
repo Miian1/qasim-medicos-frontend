@@ -1,7 +1,10 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+// Strip trailing slash(es) from the base URL to avoid "//api/..." which
+// causes Vercel to issue a 308 redirect, breaking CORS preflight requests.
+const rawBaseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const baseURL = rawBaseURL.replace(/\/+$/, '');
 
 const api = axios.create({
   baseURL: `${baseURL}/api`,
