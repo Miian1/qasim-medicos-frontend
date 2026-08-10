@@ -14,6 +14,7 @@ export const userAPI = {
   list: (params) => api.get('/users', { params }),
   create: (data) => api.post('/users', data),
   get: (id) => api.get(`/users/${id}`),
+  getReport: (id) => api.get(`/users/${id}/report`),
   update: (id, data) => api.put(`/users/${id}`, data),
   remove: (id) => api.delete(`/users/${id}`),
   resetPassword: (id, newPassword) => api.post(`/users/${id}/reset-password`, { newPassword }),

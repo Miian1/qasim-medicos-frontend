@@ -27,6 +27,9 @@ export default function Dashboard() {
   const [categorySales, setCategorySales] = useState([]);
   const [chartRange, setChartRange] = useState(7);
 
+  const isCashier = user?.role === 'cashier';
+  const scopeLabel = isCashier ? 'My' : "Today's";
+
   useEffect(() => {
     Promise.all([
       dashboardAPI.overview(),
@@ -61,7 +64,7 @@ export default function Dashboard() {
         ) : (
           <>
             <StatCard
-              title="Today's Sales"
+              title={`${scopeLabel} Sales`}
               value={formatCurrency(data?.stats?.todaySales?.total || 0)}
               subtitle={`${data?.stats?.todaySales?.count || 0} orders`}
               icon={DollarSign}
@@ -70,7 +73,7 @@ export default function Dashboard() {
               trendValue="12%"
             />
             <StatCard
-              title="Today's Profit"
+              title={`${scopeLabel} Profit`}
               value={formatCurrency(data?.stats?.todayProfit || 0)}
               subtitle="After COGS & expenses"
               icon={TrendingUp}
@@ -83,18 +86,28 @@ export default function Dashboard() {
               icon={Pill}
               color="secondary"
             />
-            <StatCard
-              title="Total Customers"
-              value={data?.stats?.totalCustomers || 0}
-              subtitle={`${data?.stats?.totalSalesCount || 0} total sales`}
-              icon={Users}
-              color="warning"
-            />
+            {isCashier ? (
+              <StatCard
+                title="My Total Sales"
+                value={data?.stats?.totalSalesCount || 0}
+                subtitle="Lifetime orders"
+                icon={ShoppingCart}
+                color="warning"
+              />
+            ) : (
+              <StatCard
+                title="Total Customers"
+                value={data?.stats?.totalCustomers || 0}
+                subtitle={`${data?.stats?.totalSalesCount || 0} total sales`}
+                icon={Users}
+                color="warning"
+              />
+            )}
           </>
         )}
       </div>
 
-      {!loading && (data?.stats?.lowStockCount > 0 || data?.stats?.expiringSoonCount > 0) && (
+      {!loading && !isCashier && (data?.stats?.lowStockCount > 0 || data?.stats?.expiringSoonCount > 0) && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
           {data.stats.lowStockCount > 0 && (
             <Link to="/inventory?filter=low-stock" className="card p-4 flex items-center gap-3 hover:shadow-soft transition-shadow">
@@ -127,7 +140,7 @@ export default function Dashboard() {
         <div className="lg:col-span-2 card">
           <div className="flex items-center justify-between p-5 border-b border-line">
             <div>
-              <h3 className="font-semibold text-ink">Sales Trend</h3>
+              <h3 className="font-semibold text-ink">{isCashier ? 'My Sales Trend' : 'Sales Trend'}</h3>
               <p className="text-sm text-muted">Revenue over time</p>
             </div>
             <div className="flex gap-1 bg-bg rounded-md p-1">
@@ -174,7 +187,7 @@ export default function Dashboard() {
 
         <div className="card">
           <div className="p-5 border-b border-line">
-            <h3 className="font-semibold text-ink">Sales by Category</h3>
+            <h3 className="font-semibold text-ink">{isCashier ? 'My Sales by Category' : 'Sales by Category'}</h3>
             <p className="text-sm text-muted">Last 30 days</p>
           </div>
           <div className="p-5">
@@ -213,10 +226,10 @@ export default function Dashboard() {
         <div className="card">
           <div className="flex items-center justify-between p-5 border-b border-line">
             <div>
-              <h3 className="font-semibold text-ink">Top Products</h3>
+              <h3 className="font-semibold text-ink">{isCashier ? 'My Top Products' : 'Top Products'}</h3>
               <p className="text-sm text-muted">Best sellers (30 days)</p>
             </div>
-            <Link to="/reports" className="text-sm text-primary hover:underline">View report</Link>
+            {isCashier ? null : <Link to="/reports" className="text-sm text-primary hover:underline">View report</Link>}
           </div>
           <div className="p-5">
             {topProducts.length === 0 ? (
@@ -243,7 +256,7 @@ export default function Dashboard() {
         <div className="card">
           <div className="flex items-center justify-between p-5 border-b border-line">
             <div>
-              <h3 className="font-semibold text-ink">Recent Activity</h3>
+              <h3 className="font-semibold text-ink">{isCashier ? 'My Recent Activity' : 'Recent Activity'}</h3>
               <p className="text-sm text-muted">Latest events</p>
             </div>
             <Activity size={18} className="text-muted" />
@@ -271,7 +284,7 @@ export default function Dashboard() {
       <div className="card mt-4">
         <div className="flex items-center justify-between p-5 border-b border-line">
           <div>
-            <h3 className="font-semibold text-ink">Recent Sales</h3>
+            <h3 className="font-semibold text-ink">{isCashier ? 'My Recent Sales' : 'Recent Sales'}</h3>
             <p className="text-sm text-muted">Latest transactions</p>
           </div>
           <Link to="/sales" className="text-sm text-primary hover:underline">View all</Link>
