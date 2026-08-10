@@ -9,12 +9,14 @@ import { Modal, ConfirmDialog } from '../components/ui/Modal.jsx';
 import { SkeletonList } from '../components/ui/Spinner.jsx';
 import { EmptyState, NoResults } from '../components/ui/EmptyState.jsx';
 import { categoryAPI } from '../api/index.js';
+import { useAuthStore } from '../store/auth.js';
 import { classNames } from '../utils/format.js';
 
 const ICONS = ['pill', 'flask-conical', 'syringe', 'hand', 'droplet', 'stethoscope', 'apple', 'baby'];
 const COLORS = ['#2563EB', '#14B8A6', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#22C55E', '#06B6D4'];
 
 export default function Categories() {
+  const can = useAuthStore((s) => s.can);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState('');
@@ -88,7 +90,7 @@ export default function Categories() {
         title="Categories"
         subtitle={`${categories.length} categories`}
         breadcrumbs={[{ label: 'Home', to: '/dashboard' }, { label: 'Categories' }]}
-        action={<Button size="sm" onClick={openNew}><Plus size={16} /> Add Category</Button>}
+        action={can('categories', 'create') ? <Button size="sm" onClick={openNew}><Plus size={16} /> Add Category</Button> : null}
       />
 
       <div className="card p-4 mb-4">
@@ -110,7 +112,7 @@ export default function Categories() {
         <div className="card">
           {search ? <NoResults onReset={() => setSearch('')} /> : (
             <EmptyState icon={Tags} title="No categories yet" message="Create categories to organize your medicines."
-              action={openNew} actionLabel="Add Category" />
+              action={can('categories', 'create') ? openNew : null} actionLabel="Add Category" />
           )}
         </div>
       ) : (
@@ -122,12 +124,16 @@ export default function Categories() {
                   <Tags size={22} />
                 </div>
                 <div className="flex gap-1">
-                  <button onClick={() => openEdit(c)} className="p-1.5 rounded-md hover:bg-bg text-muted hover:text-primary">
-                    <Edit size={16} />
-                  </button>
-                  <button onClick={() => setDeleteId(c._id)} className="p-1.5 rounded-md hover:bg-bg text-muted hover:text-danger">
-                    <Trash2 size={16} />
-                  </button>
+                  {can('categories', 'update') && (
+                    <button onClick={() => openEdit(c)} className="p-1.5 rounded-md hover:bg-bg text-muted hover:text-primary">
+                      <Edit size={16} />
+                    </button>
+                  )}
+                  {can('categories', 'delete') && (
+                    <button onClick={() => setDeleteId(c._id)} className="p-1.5 rounded-md hover:bg-bg text-muted hover:text-danger">
+                      <Trash2 size={16} />
+                    </button>
+                  )}
                 </div>
               </div>
               <h3 className="font-semibold text-ink mt-3">{c.name}</h3>

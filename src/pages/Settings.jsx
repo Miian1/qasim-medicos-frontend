@@ -12,8 +12,9 @@ import { settingsAPI } from '../api/index.js';
 import { useAuthStore } from '../store/auth.js';
 
 export default function Settings() {
-  const { can } = useAuthStore();
-  const canEdit = can('settings', 'update') || useAuthStore((s) => s.user?.role === 'owner');
+  const { can, user } = useAuthStore();
+  // Only owner can edit settings. Manager can view but not save changes.
+  const canEdit = user?.role === 'owner';
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState(null);

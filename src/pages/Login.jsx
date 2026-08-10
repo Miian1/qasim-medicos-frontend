@@ -36,19 +36,6 @@ export default function Login() {
     }
   };
 
-  const fillDemo = (role) => {
-    if (role === 'owner') {
-      setEmail('owner@qasimmedicos.com');
-      setPassword('Owner@123');
-    } else if (role === 'manager') {
-      setEmail('manager@qasimmedicos.com');
-      setPassword('Manager@123');
-    } else {
-      setEmail('cashier@qasimmedicos.com');
-      setPassword('Cashier@123');
-    }
-  };
-
   return (
     <div className="min-h-screen flex flex-col lg:flex-row bg-bg">
       {/* Left: Brand */}
@@ -181,34 +168,6 @@ export default function Login() {
               Sign in
             </Button>
           </form>
-
-          {/* Demo credentials */}
-          <div className="mt-8 p-4 bg-bg rounded-lg border border-line">
-            <p className="text-xs font-medium text-muted mb-3">Demo credentials — click to fill:</p>
-            <div className="grid grid-cols-3 gap-2">
-              <button
-                type="button"
-                onClick={() => fillDemo('owner')}
-                className="text-xs px-3 py-2 bg-white border border-line rounded-md hover:border-primary hover:text-primary"
-              >
-                Owner
-              </button>
-              <button
-                type="button"
-                onClick={() => fillDemo('manager')}
-                className="text-xs px-3 py-2 bg-white border border-line rounded-md hover:border-primary hover:text-primary"
-              >
-                Manager
-              </button>
-              <button
-                type="button"
-                onClick={() => fillDemo('cashier')}
-                className="text-xs px-3 py-2 bg-white border border-line rounded-md hover:border-primary hover:text-primary"
-              >
-                Cashier
-              </button>
-            </div>
-          </div>
         </motion.div>
       </div>
     </div>

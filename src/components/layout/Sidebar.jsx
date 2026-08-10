@@ -6,20 +6,32 @@ import {
 import { useAuthStore } from '../../store/auth.js';
 import { classNames } from '../../utils/format.js';
 
+// Role-based visibility — each item lists which roles can see it.
+// Owner sees everything (handled separately below — `|| user.role === 'owner'`).
+// Keep in sync with /home/z/my-project/qasim-medicos-backend/src/config/roles.js
+//
+// Role policy:
+//   owner  : sees everything
+//   manager: full sales + medicines (create/edit) + customers + purchases +
+//            inventory + reports + expenses — no Users page, no destructive
+//            settings changes
+//   cashier: dashboard + POS + sales (view/create) + customers (view/create/
+//            update) + medicines (view only). NO add/edit medicines, NO
+//            purchases, NO reports, NO expenses, NO users, NO settings edit.
 const NAV_ITEMS = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['owner', 'manager', 'cashier'], resource: 'dashboard' },
-  { to: '/pos', label: 'POS / New Sale', icon: ShoppingCart, roles: ['owner', 'cashier'], resource: 'pos' },
-  { to: '/medicines', label: 'Medicines', icon: Pill, roles: ['owner', 'manager', 'cashier'], resource: 'medicines' },
-  { to: '/categories', label: 'Categories', icon: Tags, roles: ['owner', 'manager'], resource: 'categories' },
-  { to: '/suppliers', label: 'Suppliers', icon: Truck, roles: ['owner', 'manager'], resource: 'suppliers' },
-  { to: '/inventory', label: 'Inventory', icon: Package, roles: ['owner', 'manager'], resource: 'inventory' },
-  { to: '/purchases', label: 'Purchases', icon: Receipt, roles: ['owner', 'manager'], resource: 'purchases' },
-  { to: '/sales', label: 'Sales', icon: FileText, roles: ['owner', 'manager', 'cashier'], resource: 'sales' },
-  { to: '/customers', label: 'Customers', icon: Users, roles: ['owner', 'manager', 'cashier'], resource: 'customers' },
-  { to: '/expenses', label: 'Expenses', icon: Receipt, roles: ['owner', 'manager'], resource: 'expenses' },
-  { to: '/reports', label: 'Reports', icon: BarChart3, roles: ['owner', 'manager'], resource: 'reports' },
-  { to: '/users', label: 'Users', icon: UserCog, roles: ['owner'], resource: 'users' },
-  { to: '/settings', label: 'Settings', icon: Settings, roles: ['owner', 'manager'], resource: 'settings' },
+  { to: '/dashboard',  label: 'Dashboard',     icon: LayoutDashboard, roles: ['owner', 'manager', 'cashier'], resource: 'dashboard' },
+  { to: '/pos',        label: 'POS / New Sale', icon: ShoppingCart,    roles: ['owner', 'manager', 'cashier'], resource: 'pos' },
+  { to: '/medicines',  label: 'Medicines',     icon: Pill,            roles: ['owner', 'manager', 'cashier'], resource: 'medicines' },
+  { to: '/categories', label: 'Categories',    icon: Tags,            roles: ['owner', 'manager'],             resource: 'categories' },
+  { to: '/suppliers',  label: 'Suppliers',      icon: Truck,           roles: ['owner', 'manager'],             resource: 'suppliers' },
+  { to: '/inventory',  label: 'Inventory',      icon: Package,         roles: ['owner', 'manager'],             resource: 'inventory' },
+  { to: '/purchases',  label: 'Purchases',     icon: Receipt,         roles: ['owner', 'manager'],             resource: 'purchases' },
+  { to: '/sales',      label: 'Sales',          icon: FileText,        roles: ['owner', 'manager', 'cashier'], resource: 'sales' },
+  { to: '/customers',  label: 'Customers',     icon: Users,            roles: ['owner', 'manager', 'cashier'], resource: 'customers' },
+  { to: '/expenses',   label: 'Expenses',       icon: Receipt,         roles: ['owner', 'manager'],             resource: 'expenses' },
+  { to: '/reports',    label: 'Reports',        icon: BarChart3,      roles: ['owner', 'manager'],             resource: 'reports' },
+  { to: '/users',      label: 'Users',          icon: UserCog,         roles: ['owner'],                        resource: 'users' },
+  { to: '/settings',   label: 'Settings',       icon: Settings,        roles: ['owner', 'manager'],             resource: 'settings' },
 ];
 
 export default function Sidebar({ open, onClose }) {

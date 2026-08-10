@@ -64,7 +64,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
 
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/pos" element={<ProtectedRoute roles={['owner', 'cashier']}><POS /></ProtectedRoute>} />
+          <Route path="/pos" element={<ProtectedRoute roles={['owner', 'manager', 'cashier']}><POS /></ProtectedRoute>} />
           <Route path="/medicines" element={<ProtectedRoute><Medicines /></ProtectedRoute>} />
           <Route path="/medicines/new" element={<ProtectedRoute roles={['owner', 'manager']}><MedicineForm /></ProtectedRoute>} />
           <Route path="/medicines/:id/edit" element={<ProtectedRoute roles={['owner', 'manager']}><MedicineForm /></ProtectedRoute>} />
@@ -81,7 +81,7 @@ export default function App() {
           <Route path="/expenses" element={<ProtectedRoute roles={['owner', 'manager']}><Expenses /></ProtectedRoute>} />
           <Route path="/reports" element={<ProtectedRoute roles={['owner', 'manager']}><Reports /></ProtectedRoute>} />
           <Route path="/users" element={<ProtectedRoute roles={['owner']}><Users /></ProtectedRoute>} />
-          <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute roles={['owner', 'manager']}><Settings /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
 
           <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />

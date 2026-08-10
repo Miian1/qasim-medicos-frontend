@@ -4,11 +4,11 @@ import { useAuthStore } from '../../store/auth.js';
 import { classNames } from '../../utils/format.js';
 
 const ITEMS = [
-  { to: '/dashboard', label: 'Home', icon: LayoutDashboard, roles: ['owner', 'manager', 'cashier'] },
-  { to: '/medicines', label: 'Medicines', icon: Pill, roles: ['owner', 'manager', 'cashier'] },
-  { to: '/pos', label: 'New Sale', icon: ShoppingCart, roles: ['owner', 'cashier'], highlight: true },
-  { to: '/sales', label: 'Sales', icon: ShoppingCart, roles: ['owner', 'manager', 'cashier'] },
-  { to: '/customers', label: 'Customers', icon: Users, roles: ['owner', 'manager', 'cashier'] },
+  { to: '/dashboard', label: 'Home',      icon: LayoutDashboard, roles: ['owner', 'manager', 'cashier'] },
+  { to: '/medicines', label: 'Medicines', icon: Pill,            roles: ['owner', 'manager', 'cashier'] },
+  { to: '/pos',       label: 'New Sale',  icon: ShoppingCart,    roles: ['owner', 'manager', 'cashier'], highlight: true },
+  { to: '/sales',     label: 'Sales',      icon: ShoppingCart,    roles: ['owner', 'manager', 'cashier'] },
+  { to: '/customers', label: 'Customers', icon: Users,            roles: ['owner', 'manager', 'cashier'] },
 ];
 
 export default function BottomNav({ onMoreClick }) {

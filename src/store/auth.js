@@ -65,21 +65,37 @@ export const useAuthStore = create(
         const { user } = get();
         if (!user) return false;
         if (user.role === 'owner') return true;
-        // Simple client-side mirror of backend permission matrix
+        // Client-side mirror of backend permission matrix.
+        // Keep in sync with /home/z/my-project/qasim-medicos-backend/src/config/roles.js
+        //
+        // Role policy:
+        //   owner  : unrestricted
+        //   manager: sales + medicines create/update + customer management,
+        //            but NO destructive deletes (delete medicines/customers)
+        //            and NO settings:clear_data
+        //   cashier: sales only (view + create) + medicines read + customers
+        //            view/create/update. Cannot add/edit/remove medicines,
+        //            cannot clear app data.
         const perms = {
           manager: {
-            dashboard: ['view'], medicines: ['view', 'create', 'update', 'delete'],
-            categories: ['view', 'create', 'update', 'delete'],
-            suppliers: ['view', 'create', 'update', 'delete'],
+            dashboard: ['view'],
+            medicines: ['view', 'create', 'update'],          // NO 'delete' — owner only
+            categories: ['view', 'create', 'update'],
+            suppliers: ['view', 'create', 'update'],
             purchases: ['view', 'create', 'update'],
-            inventory: ['view', 'update'], reports: ['view', 'export'],
-            expenses: ['view', 'create', 'update', 'delete'],
-            customers: ['view', 'create', 'update'], settings: ['view'],
+            inventory: ['view', 'update'],
+            reports: ['view', 'export'],
+            expenses: ['view', 'create', 'update'],
+            customers: ['view', 'create', 'update'],           // NO 'delete'
+            sales: ['view', 'create', 'update', 'refund'],
+            settings: ['view'],
           },
           cashier: {
-            dashboard: ['view'], pos: ['use'], sales: ['view', 'create'],
+            dashboard: ['view'],
+            pos: ['use'],
+            sales: ['view', 'create'],
             customers: ['view', 'create', 'update'],
-            invoices: ['view', 'create'], medicines: ['view'],
+            medicines: ['view'],
           },
         };
         const actions = perms[user.role]?.[resource];

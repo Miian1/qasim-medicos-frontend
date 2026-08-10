@@ -9,10 +9,12 @@ import { Modal, ConfirmDialog } from '../components/ui/Modal.jsx';
 import { SkeletonList } from '../components/ui/Spinner.jsx';
 import { EmptyState, NoResults } from '../components/ui/EmptyState.jsx';
 import { supplierAPI } from '../api/index.js';
+import { useAuthStore } from '../store/auth.js';
 
 const EMPTY = { name: '', company: '', email: '', phone: '', address: '', contactPerson: '', gstNumber: '', paymentTerms: 'Net 30' };
 
 export default function Suppliers() {
+  const can = useAuthStore((s) => s.can);
   const [loading, setLoading] = useState(true);
   const [suppliers, setSuppliers] = useState([]);
   const [search, setSearch] = useState('');
@@ -63,7 +65,7 @@ export default function Suppliers() {
         title="Suppliers"
         subtitle={`${total} suppliers`}
         breadcrumbs={[{ label: 'Home', to: '/dashboard' }, { label: 'Suppliers' }]}
-        action={<Button size="sm" onClick={openNew}><Plus size={16} /> Add Supplier</Button>}
+        action={can('suppliers', 'create') ? <Button size="sm" onClick={openNew}><Plus size={16} /> Add Supplier</Button> : null}
       />
 
       <div className="card p-4 mb-4">
@@ -79,7 +81,7 @@ export default function Suppliers() {
         <div className="card">
           {search ? <NoResults onReset={() => setSearch('')} /> : (
             <EmptyState icon={Truck} title="No suppliers yet" message="Add suppliers to track purchases and stock sources."
-              action={openNew} actionLabel="Add Supplier" />
+              action={can('suppliers', 'create') ? openNew : null} actionLabel="Add Supplier" />
           )}
         </div>
       ) : (
@@ -91,8 +93,8 @@ export default function Suppliers() {
                   <Truck size={22} />
                 </div>
                 <div className="flex gap-1">
-                  <button onClick={() => openEdit(s)} className="p-1.5 rounded-md hover:bg-bg text-muted hover:text-primary"><Edit size={16} /></button>
-                  <button onClick={() => setDeleteId(s._id)} className="p-1.5 rounded-md hover:bg-bg text-muted hover:text-danger"><Trash2 size={16} /></button>
+                  {can('suppliers', 'update') && <button onClick={() => openEdit(s)} className="p-1.5 rounded-md hover:bg-bg text-muted hover:text-primary"><Edit size={16} /></button>}
+                  {can('suppliers', 'delete') && <button onClick={() => setDeleteId(s._id)} className="p-1.5 rounded-md hover:bg-bg text-muted hover:text-danger"><Trash2 size={16} /></button>}
                 </div>
               </div>
               <h3 className="font-semibold text-ink mt-3">{s.name}</h3>

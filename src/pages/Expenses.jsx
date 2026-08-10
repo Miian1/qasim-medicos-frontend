@@ -10,6 +10,7 @@ import { Modal, ConfirmDialog } from '../components/ui/Modal.jsx';
 import { SkeletonList } from '../components/ui/Spinner.jsx';
 import { EmptyState, NoResults } from '../components/ui/EmptyState.jsx';
 import { expenseAPI } from '../api/index.js';
+import { useAuthStore } from '../store/auth.js';
 import { formatCurrency, formatDate, downloadCSV } from '../utils/format.js';
 
 const EMPTY = { title: '', description: '', amount: '', category: 'other', paymentMethod: 'cash', date: '' };
@@ -22,6 +23,7 @@ const CATEGORIES = [
 ];
 
 export default function Expenses() {
+  const can = useAuthStore((s) => s.can);
   const [loading, setLoading] = useState(true);
   const [expenses, setExpenses] = useState([]);
   const [total, setTotal] = useState(0);
@@ -82,7 +84,7 @@ export default function Expenses() {
         action={
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={handleExport}><Download size={16} /> Export</Button>
-            <Button size="sm" onClick={openNew}><Plus size={16} /> Add Expense</Button>
+            {can('expenses', 'create') && <Button size="sm" onClick={openNew}><Plus size={16} /> Add Expense</Button>}
           </div>
         }
       />
@@ -106,7 +108,7 @@ export default function Expenses() {
         <div className="card">
           {search || category ? <NoResults onReset={() => { setSearch(''); setCategory(''); }} /> : (
             <EmptyState icon={Receipt} title="No expenses yet" message="Track your business expenses here."
-              action={openNew} actionLabel="Add Expense" />
+              action={can('expenses', 'create') ? openNew : null} actionLabel="Add Expense" />
           )}
         </div>
       ) : (
@@ -132,8 +134,8 @@ export default function Expenses() {
                     <td className="text-sm text-muted">{formatDate(e.date)}</td>
                     <td className="text-right">
                       <div className="flex justify-end gap-1">
-                        <button onClick={() => openEdit(e)} className="p-1.5 rounded-md hover:bg-bg text-muted hover:text-primary"><Edit size={16} /></button>
-                        <button onClick={() => setDeleteId(e._id)} className="p-1.5 rounded-md hover:bg-bg text-muted hover:text-danger"><Trash2 size={16} /></button>
+                        {can('expenses', 'update') && <button onClick={() => openEdit(e)} className="p-1.5 rounded-md hover:bg-bg text-muted hover:text-primary"><Edit size={16} /></button>}
+                        {can('expenses', 'delete') && <button onClick={() => setDeleteId(e._id)} className="p-1.5 rounded-md hover:bg-bg text-muted hover:text-danger"><Trash2 size={16} /></button>}
                       </div>
                     </td>
                   </tr>
